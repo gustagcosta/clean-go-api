@@ -15,8 +15,7 @@ func main() {
 	godotenv.Load()
 
 	// define o banco de dados de nós iremos usar
-	storage := &storage.MemoryStorage{}
-	storage.Connect("EM MEMORIA")
+	storage := &storage.PgStorage{}
 
 	// Criamos o servidor da API, da pra abstrair mais aqui nessa etapa
 	server := api.NewServer(os.Getenv("PORT"), storage)

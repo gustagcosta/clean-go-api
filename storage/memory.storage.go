@@ -12,7 +12,7 @@ type MemoryStorage struct {
 	dogs []types.Dog
 }
 
-func (s *MemoryStorage) Connect(connectionString string) error {
+func (s *MemoryStorage) Connect() error {
 	dogs := []types.Dog{
 		{
 			ID:   1,
@@ -40,7 +40,7 @@ func (s *MemoryStorage) GetDogs() (*[]types.Dog, error) {
 	return &s.dogs, nil
 }
 
-func (s *MemoryStorage) StoreDog(name string, age int) error {
+func (s *MemoryStorage) StoreDog(name string, age int) (int, error) {
 	dog := &types.Dog{
 		ID:   rand.Intn(100),
 		Name: name,
@@ -51,7 +51,7 @@ func (s *MemoryStorage) StoreDog(name string, age int) error {
 
 	s.dogs = dogs
 
-	return nil
+	return dog.ID, nil
 }
 
 func (s *MemoryStorage) GetDog(id int) (*types.Dog, error) {
@@ -59,7 +59,7 @@ func (s *MemoryStorage) GetDog(id int) (*types.Dog, error) {
 		return d.ID == id
 	})
 
-	if idx <= 0 {
+	if idx < 0 {
 		return nil, errors.New("dog not found")
 	}
 
@@ -94,7 +94,7 @@ func (s *MemoryStorage) DeleteDog(id int) error {
 		return d.ID == id
 	})
 
-	if idx <= 0 {
+	if idx < 0 {
 		return errors.New("dog not found")
 	}
 

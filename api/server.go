@@ -84,11 +84,17 @@ func (s *Server) handleStoreDog(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	if err := s.storage.StoreDog(req.Name, req.Age); err != nil {
+	id, err := s.storage.StoreDog(req.Name, req.Age)
+	if err != nil {
 		log.Fatal(err)
 	}
 
+	idReturn := &types.IdReturn{
+		ID: id,
+	}
+
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(idReturn)
 }
 
 func (s *Server) handleDeleteDog(w http.ResponseWriter, r *http.Request) {
