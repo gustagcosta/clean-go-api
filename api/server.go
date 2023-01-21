@@ -124,12 +124,8 @@ func (s *Server) handleStoreDog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	idReturn := &types.IdReturn{
-		ID: id,
-	}
-
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(idReturn)
+	json.NewEncoder(w).Encode(map[string]int{"id": id})
 }
 
 func (s *Server) handleDeleteDog(w http.ResponseWriter, r *http.Request) {
