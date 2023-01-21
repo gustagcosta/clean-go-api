@@ -2,7 +2,6 @@ package storage
 
 import (
 	"database/sql"
-	"errors"
 	"os"
 
 	"github.com/gustagcosta/go-api/types"
@@ -72,13 +71,23 @@ func (s *PgStorage) GetDog(id int) (*types.Dog, error) {
 	s.Connect()
 	var dog types.Dog
 
-	err := s.db.QueryRow(`SELECT * FROM dogs WHERE id = $1`, id).Scan(&dog.ID, &dog.Name, &dog.Age)
+	rows, err := s.db.Query(`SELECT * FROM dogs WHERE id = $1`, id)
 	if err != nil {
 		return nil, err
 	}
 
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&dog.ID, &dog.Name, &dog.Age)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if dog.ID == 0 {
-		return nil, errors.New("dog not founded")
+		return nil, nil
 	}
 
 	defer s.db.Close()
