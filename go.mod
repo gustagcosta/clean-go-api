@@ -7,6 +7,5 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/exp v0.0.0-20230118134722-a68e582fa157
+	github.com/lib/pq v1.10.7
 )
-
-require github.com/lib/pq v1.10.7 // indirect

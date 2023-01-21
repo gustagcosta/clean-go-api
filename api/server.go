@@ -70,8 +70,11 @@ func (s *Server) handleGetDog(w http.ResponseWriter, r *http.Request) {
 	idInt, _ := strconv.Atoi(id)
 
 	dog, err := s.storage.GetDog(idInt)
+
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	json.NewEncoder(w).Encode(dog)
@@ -81,12 +84,16 @@ func (s *Server) handleStoreDog(w http.ResponseWriter, r *http.Request) {
 	var req types.DogStoreRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	id, err := s.storage.StoreDog(req.Name, req.Age)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	idReturn := &types.IdReturn{
@@ -104,7 +111,9 @@ func (s *Server) handleDeleteDog(w http.ResponseWriter, r *http.Request) {
 
 	err := s.storage.DeleteDog(idInt)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
@@ -114,11 +123,15 @@ func (s *Server) handleUpdateDog(w http.ResponseWriter, r *http.Request) {
 	var req types.Dog
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if err := s.storage.UpdateDog(&req); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
